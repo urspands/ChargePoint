@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ChargePoint Scheduler</string>
+    <string name="schedule_label">%s: %s</string>
+    <string name="error_message">Error :: %s</string>
+
+</resources>
