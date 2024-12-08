@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(getScheduleUseCase: GetScheduleUseCase) 
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUIState.Loading)
 
-    fun getTrucks(): List<Truck> = listOf(
+   private fun getTrucks(): List<Truck> = listOf(
         Truck("Truck_1", 50.0, 20.0),
         Truck("Truck_4", 20.0, 30.0),
         Truck("Truck_3", 70.0, 10.0),
@@ -44,7 +44,7 @@ class HomeViewModel @Inject constructor(getScheduleUseCase: GetScheduleUseCase) 
         Truck("Truck_6", 90.0, 50.0)
     )
 
-    fun getChargers(): List<Charger> = listOf(
+    private fun getChargers(): List<Charger> = listOf(
         Charger("Charger_1", 10.0),
         Charger("Charger_2", 15.0),
         Charger("Charger_3", 20.0)
