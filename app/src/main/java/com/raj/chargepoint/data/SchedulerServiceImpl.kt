@@ -26,6 +26,8 @@ class SchedulerServiceImpl() : SchedulerService {
         chargers: List<Charger>,
         hours: Int
     ): List<Schedule> {
+        if (trucks.isEmpty() || chargers.isEmpty()) return emptyList()
+
         val schedules = mutableListOf<Schedule>()
         val availableChargers = chargers.toMutableList()
         //sort the truck list by arrivalTimeStamp for FirstComeFirstServe
@@ -52,7 +54,9 @@ class SchedulerServiceImpl() : SchedulerService {
                     timeRemaining -= chargingTime
                 }
             }
-            schedules.add(Schedule(charger.id, chargerSchedule))
+            if (chargerSchedule.isNotEmpty()) {
+                schedules.add(Schedule(charger.id, chargerSchedule))
+            }
         }
         return schedules
     }

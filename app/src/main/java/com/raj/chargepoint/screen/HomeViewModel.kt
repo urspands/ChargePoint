@@ -8,24 +8,32 @@ import com.raj.chargepoint.data.models.Truck
 import com.raj.chargepoint.domain.GetScheduleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(getScheduleUseCase: GetScheduleUseCase) : ViewModel() {
+    //Truck list and charger list can be updated from the UI and this implementation is just for demo purpose
+    private val truckList = MutableStateFlow<List<Truck>>(getTrucks())
+    private val chargerList = MutableStateFlow<List<Charger>>(getChargers())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val homeUiState: StateFlow<HomeUIState> =
-        getScheduleUseCase(getTrucks(), getChargers(), TOTAL_HOURS).mapLatest { state ->
-            when (state) {
-                is FlowState.Failed -> HomeUIState.Error(state.exception)
-                FlowState.Loading -> HomeUIState.Loading
-                is FlowState.Success -> HomeUIState.Success(state.data)
+    val homeUiState = combine(truckList, chargerList) { trucks, chargers ->
+        getScheduleUseCase(trucks, chargers, TOTAL_HOURS)
+    }.flatMapLatest { flowState ->
+            flowState.mapLatest { state ->
+                when (state) {
+                    is FlowState.Failed -> HomeUIState.Error(state.exception)
+                    FlowState.Loading -> HomeUIState.Loading
+                    is FlowState.Success -> HomeUIState.Success(state.data)
+                }
             }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUIState.Loading)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), HomeUIState.Loading)
 
     fun getTrucks(): List<Truck> = listOf(
         Truck("Truck_1", 50.0, 20.0),
