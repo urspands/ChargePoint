@@ -15,6 +15,9 @@ it with a charger and the time remaining in that charger.
 The app doesn't provide an user interface to add the list of chargers and vehicles. The list of
 chargers and vehicles are hardcoded in the HomeViewModel for demo purpose.
 
+## Unit Tests
+Added unit tests for SchedulerServiceImpl, SchedulerRepositoryImpl and HomeViewModel
+
 ## Architecture
 
 The project follows the Model-View-ViewModel (MVVM) architectural pattern, with a focus on clean
